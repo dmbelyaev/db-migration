@@ -6,8 +6,10 @@ import com.example.dbmigration.theapp.data.CustomerProfileRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -28,13 +30,14 @@ public class CustomerProfileService {
                 .setLastName(dto.getLastName())
                 .setEmail(dto.getEmail());
         if (dto.getAddress() != null) {
-            entity.setAddress(
+            entity.setAddresses(List.of(
                     new AddressEntity()
                             .setId(UUID.randomUUID().toString())
+                            .setMain(dto.getAddress().isMain())
                             .setStreet(dto.getAddress().getStreet())
                             .setCity(dto.getAddress().getCity())
                             .setZipCode(dto.getAddress().getZipCode())
-            );
+            ));
         }
 
         var persistedEntity = repository.save(entity);
@@ -72,9 +75,9 @@ public class CustomerProfileService {
                 entity.getFirstName(),
                 entity.getLastName(),
                 entity.getEmail())
-                .setAddress(
-                        entity.getAddress()
-                                .map(address -> new Address(address.getStreet(), address.getCity(), address.getZipCode()))
-                                .orElse(null));
+                .setAddresses(
+                        entity.getAddresses().stream()
+                                .map(address -> new Address(address.getStreet(), address.getCity(), address.getZipCode()).setMain(address.isMain()))
+                                .collect(Collectors.toList()));
     }
 }

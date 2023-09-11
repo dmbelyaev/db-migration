@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -40,7 +41,7 @@ class CustomerProfileControllerTest {
 
             when(service.create(any()))
                     .thenReturn(new CustomerProfileResponse("profile-id", "Joe", "Doe", "joe.doe@test.org")
-                            .setAddress(new Address("street", "city", "00000")));
+                            .setAddresses(List.of(new Address("street", "city", "00000"))));
 
             var requestBody = """
                     {
@@ -68,12 +69,13 @@ class CustomerProfileControllerTest {
                             "firstName": "Joe",
                             "lastName": "Doe",
                             "email": "joe.doe@test.org",
-                            "address":
-                                {
+                            "addresses":
+                                [{
                                 "street": "street",
                                 "city": "city",
-                                "zipCode": "00000"
-                                }
+                                "zipCode": "00000",
+                                "main": true
+                                }]
                             }
                             """));
 
@@ -89,6 +91,7 @@ class CustomerProfileControllerTest {
             assertThat(profile.getAddress().getStreet()).isEqualTo("street");
             assertThat(profile.getAddress().getCity()).isEqualTo("city");
             assertThat(profile.getAddress().getZipCode()).isEqualTo("00000");
+            assertThat(profile.getAddress().isMain()).isTrue();
         }
     }
 
@@ -165,7 +168,7 @@ class CustomerProfileControllerTest {
             when(service.getAll())
                     .thenReturn(Stream.of(
                             new CustomerProfileResponse("customer-profile-id", "Joe", "Doe", "joe.doe@test.org")
-                                    .setAddress(new Address("street", "city", "00000"))));
+                                    .setAddresses(List.of(new Address("street", "city", "00000").setMain(false)))));
 
             mockMvc.perform(get("/api/customer-profiles/")
                             .accept(MediaType.APPLICATION_JSON))
@@ -176,12 +179,13 @@ class CustomerProfileControllerTest {
                             "firstName": "Joe",
                             "lastName": "Doe",
                             "email": "joe.doe@test.org",
-                            "address":
-                                {
+                            "addresses":
+                                [{
                                 "street": "street",
                                 "city": "city",
-                                "zipCode": "00000"
-                                }
+                                "zipCode": "00000",
+                                "main": false
+                                }]
                             }]
                             """));
 

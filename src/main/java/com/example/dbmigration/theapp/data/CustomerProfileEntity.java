@@ -3,9 +3,11 @@ package com.example.dbmigration.theapp.data;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 
-import java.util.Optional;
+import java.util.Collections;
+import java.util.List;
 
 @Entity(name = "CustomerProfile")
 public class CustomerProfileEntity {
@@ -19,8 +21,9 @@ public class CustomerProfileEntity {
 
     private String email;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private AddressEntity address;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "profile_id")
+    private List<AddressEntity> addresses;
 
     public String getId() {
         return id;
@@ -58,12 +61,12 @@ public class CustomerProfileEntity {
         return this;
     }
 
-    public Optional<AddressEntity> getAddress() {
-        return Optional.ofNullable(address);
+    public List<AddressEntity> getAddresses() {
+        return addresses == null ? Collections.emptyList() : addresses;
     }
 
-    public CustomerProfileEntity setAddress(AddressEntity address) {
-        this.address = address;
+    public CustomerProfileEntity setAddresses(List<AddressEntity> addresses) {
+        this.addresses = addresses;
         return this;
     }
 }

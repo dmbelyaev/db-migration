@@ -8,10 +8,13 @@ public class Address {
 
 	private final String zipCode;
 
+	private boolean main;
+
 	public Address(String street, String city, String zipCode) {
 		this.street = street;
 		this.city = city;
 		this.zipCode = zipCode;
+		this.main = true;
 	}
 
 	public String getStreet() {
@@ -24,5 +27,14 @@ public class Address {
 
 	public String getZipCode() {
 		return zipCode;
+	}
+
+	public boolean isMain() {
+		return main;
+	}
+
+	public Address setMain(boolean main) {
+		this.main = main;
+		return this;
 	}
 }

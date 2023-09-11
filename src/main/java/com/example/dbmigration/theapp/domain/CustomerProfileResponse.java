@@ -1,5 +1,7 @@
 package com.example.dbmigration.theapp.domain;
 
+import java.util.List;
+
 public class CustomerProfileResponse {
 
     private final String id;
@@ -10,7 +12,7 @@ public class CustomerProfileResponse {
 
     private final String email;
 
-    private Address address;
+    private List<Address> addresses;
 
     public CustomerProfileResponse(String id, String firstName, String lastName, String email) {
         this.id = id;
@@ -35,12 +37,12 @@ public class CustomerProfileResponse {
         return email;
     }
 
-    public Address getAddress() {
-        return address;
+    public List<Address> getAddresses() {
+        return addresses;
     }
 
-    public CustomerProfileResponse setAddress(Address address) {
-        this.address = address;
+    public CustomerProfileResponse setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
         return this;
     }
 }

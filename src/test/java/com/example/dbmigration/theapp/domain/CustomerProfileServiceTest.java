@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -46,7 +47,7 @@ class CustomerProfileServiceTest {
         assertThat(result.getLastName()).isEqualTo(customerProfile.getLastName());
         assertThat(result.getEmail()).isEqualTo(customerProfile.getEmail());
         assertThat(result.getId()).isNotBlank();
-        assertThat(result.getAddress()).isNotNull();
+        assertThat(result.getAddresses()).hasSize(1);
 
         var customerProfileEntityCaptor = ArgumentCaptor.forClass(CustomerProfileEntity.class);
         verify(repository).save(customerProfileEntityCaptor.capture());
@@ -56,7 +57,11 @@ class CustomerProfileServiceTest {
         assertThat(customerProfileEntity.getLastName()).isEqualTo(customerProfile.getLastName());
         assertThat(customerProfileEntity.getEmail()).isEqualTo(customerProfile.getEmail());
         assertThat(customerProfileEntity.getId()).isEqualTo(result.getId());
-        assertThat(customerProfileEntity.getAddress()).isNotEmpty();
+        assertThat(customerProfileEntity.getAddresses()).hasSize(1);
+        assertThat(customerProfileEntity.getAddresses().get(0).isMain()).isTrue();
+        assertThat(customerProfileEntity.getAddresses().get(0).getCity()).isEqualTo("city");
+        assertThat(customerProfileEntity.getAddresses().get(0).getStreet()).isEqualTo("street");
+        assertThat(customerProfileEntity.getAddresses().get(0).getZipCode()).isEqualTo("00000");
     }
 
     @Test
@@ -122,7 +127,7 @@ class CustomerProfileServiceTest {
                 .setId(id).setFirstName("Joe")
                 .setLastName("Doe")
                 .setEmail("joe.doe@test.org")
-                .setAddress(new AddressEntity().setStreet("street").setCity("city").setZipCode("00000"));
+                .setAddresses(List.of(new AddressEntity().setStreet("street").setCity("city").setZipCode("00000").setMain(false)));
         when(repository.streamAll()).thenReturn(Stream.of(entity));
 
         // when
@@ -139,9 +144,10 @@ class CustomerProfileServiceTest {
         assertThat(firstResponse.getLastName()).isEqualTo(entity.getLastName());
         assertThat(firstResponse.getEmail()).isEqualTo(entity.getEmail());
         assertThat(firstResponse.getId()).isEqualTo(id);
-        assertThat(firstResponse.getAddress()).isNotNull();
-        assertThat(firstResponse.getAddress().getStreet()).isEqualTo("street");
-        assertThat(firstResponse.getAddress().getCity()).isEqualTo("city");
-        assertThat(firstResponse.getAddress().getZipCode()).isEqualTo("00000");
+        assertThat(firstResponse.getAddresses()).hasSize(1);
+        assertThat(firstResponse.getAddresses().get(0).getStreet()).isEqualTo("street");
+        assertThat(firstResponse.getAddresses().get(0).getCity()).isEqualTo("city");
+        assertThat(firstResponse.getAddresses().get(0).getZipCode()).isEqualTo("00000");
+        assertThat(firstResponse.getAddresses().get(0).isMain()).isFalse();
     }
 }

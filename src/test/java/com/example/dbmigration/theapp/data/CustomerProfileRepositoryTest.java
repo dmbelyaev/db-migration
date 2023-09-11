@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,6 +26,7 @@ class CustomerProfileRepositoryTest {
 		var id = UUID.randomUUID().toString();
 		var address = new AddressEntity()
 				.setId(UUID.randomUUID().toString())
+				.setMain(true)
 				.setCity("Munich")
 				.setZipCode("89000")
 				.setStreet("Milky Way 42");
@@ -33,7 +35,7 @@ class CustomerProfileRepositoryTest {
 				.setFirstName("Joe")
 				.setLastName("Doe")
 				.setEmail("joe.doe@test.com")
-				.setAddress(address);
+				.setAddresses(List.of(address));
 
 		subject.saveAndFlush(entity);
 
@@ -46,6 +48,6 @@ class CustomerProfileRepositoryTest {
 		assertThat(actualEntity.getFirstName()).isEqualTo(entity.getFirstName());
 		assertThat(actualEntity.getLastName()).isEqualTo(entity.getLastName());
 		assertThat(actualEntity.getEmail()).isEqualTo(entity.getEmail());
-		assertThat(actualEntity.getAddress()).isNotNull();
+		assertThat(actualEntity.getAddresses()).hasSize(1);
 	}
 }

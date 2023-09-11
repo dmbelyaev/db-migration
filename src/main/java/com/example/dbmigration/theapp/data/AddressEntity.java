@@ -15,6 +15,8 @@ public class AddressEntity {
 
 	private String zipCode;
 
+	private boolean main;
+
 	public String getId() {
 		return id;
 	}
@@ -48,6 +50,15 @@ public class AddressEntity {
 
 	public AddressEntity setZipCode(String zipCode) {
 		this.zipCode = zipCode;
+		return this;
+	}
+
+	public boolean isMain() {
+		return main;
+	}
+
+	public AddressEntity setMain(boolean main) {
+		this.main = main;
 		return this;
 	}
 }
