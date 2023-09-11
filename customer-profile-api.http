@@ -1,0 +1,17 @@
+### Health
+GET localhost:8080/actuator/health
+Accept: application/json
+
+### Create
+POST localhost:8080/api/customer-profiles
+Content-Type: application/json
+
+{"email": "test_user@test.com","address": {"street":"has no name", "city": "city", "zipCode": "00000"}}
+
+### Get
+GET localhost:8080/api/customer-profiles/08aa4316-4255-4ac2-a6d6-92aef38f99b0
+Accept: application/json
+
+### Get All
+GET localhost:8080/api/customer-profiles/
+Accept: application/json

@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-migration-demo-app
+spec:
+  selector:
+    matchLabels:
+      run: db-migration-demo-app
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        run: db-migration-demo-app
+    spec:
+      containers:
+        - name: db-migration-demo-app-pod
+          image: stranger/db-migration-demo-app:1.0
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 30
+            failureThreshold: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 10
+            failureThreshold: 5
+            terminationGracePeriodSeconds: 10
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://host.docker.internal:5432/local_db"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "user"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "password"
+            - name: LOGGING_LEVEL_ORG_FLYWAYDB
+              value: "DEBUG"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-migration-demo-app-svc
+  labels:
+    run: db-migration-demo-app
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    run: db-migration-demo-app
