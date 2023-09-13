@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migration-demo-job
+spec:
+  template:
+    spec:
+      containers:
+        - name: db-migration-demo-job-pod
+          image: stranger/db-migration-demo-job:1.1.2
+          command: ["java",  "-jar", "app.jar"]
+          env:
+            - name: DATASOURCE_URL
+              value: "jdbc:postgresql://host.docker.internal:5432/local_db"
+            - name: DATASOURCE_USERNAME
+              value: "user"
+            - name: DATASOURCE_PASSWORD
+              value: "password"
+      restartPolicy: Never
+  backoffLimit: 1
