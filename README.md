@@ -25,6 +25,11 @@ docker-compose up -d
 ./scripts/deploy-app.sh
 ```
 
+# Delete app from the cluster
+```shell
+./scripts/delete-app.sh
+```
+
 # Open service port
 ```shell
 ./scripts/port-forwarding.sh
